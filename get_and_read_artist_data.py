@@ -45,7 +45,10 @@ def get_artist_csv_file():
 
 
 
-def get_basic_info_from_artist_table(content_of_artists):
+def get_basic_info_from_artist_table():
+
+    content_of_artists = get_artist_csv_file()
+
     # 基本信息的匹配
     # id, first_name, last_name
     pattern_of_basic_info = r"\r\n(\d{1,3});([^;]*);([^;]*);http.*\d{1,3};"
@@ -86,7 +89,10 @@ def get_basic_info_from_artist_table(content_of_artists):
     # pattern_of_country_apart_from_last_line = r";([^;]*)?;[^;]*;[^;]*;[^;]*\r\n\d{1,3};" 
     # pattern_of_country_of_last_line = r";([^;]*)?;[^;]*;[^;]*;[^;]*\r$"
 
-def get_country_from_artist_table(content_of_artists):
+def get_country_from_artist_table():
+
+    content_of_artists = get_artist_csv_file()
+
     pattern_of_country = r";([^;]*);[^;]*;[^;]*;[^;]*(?:\r\n\d{1,3};|\r$)"
     matches_of_country = re.findall(pattern_of_country, content_of_artists)
     # print(matches2)
@@ -118,7 +124,11 @@ def get_country_from_artist_table(content_of_artists):
     # 把 list_of_basic_info 和 list_of_country 合并起来
     # 那么生成的 list_of_artist_profile 还是一个 list of lists
 
-def combine_data_of_artist_table(artist_id, first_name, last_name, country):
+def combine_data_of_artist_table():
+
+    artist_id, first_name, last_name = get_basic_info_from_artist_table()
+    country = get_country_from_artist_table()
+
     data_of_artist_table = []
 
     for i in range(len(artist_id)):

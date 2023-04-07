@@ -20,7 +20,9 @@ def get_art_csv_file():
 
 
 
-def get_work_title_from_art_table(content_of_arts):
+def get_work_title_from_art_table():
+
+    content_of_arts = get_art_csv_file()
 
     pattern_of_work_title = r"\r\n\d{1,3};([^;]*);"
 
@@ -35,7 +37,9 @@ def get_work_title_from_art_table(content_of_arts):
     # print(len(list_of_work_title))
     # 670个
 
-def get_other_info_from_art_table(content_of_arts):
+def get_other_info_from_art_table():
+
+    content_of_arts = get_art_csv_file()
 
     # 遇到大段文字我就直接跳过 regex前面部分的 regex后面部分的
 
@@ -96,7 +100,9 @@ def get_other_info_from_art_table(content_of_arts):
 
     
     
-def get_artist_id_and_year_from_art_table(content_of_arts):
+def get_artist_id_and_year_from_art_table():
+
+    content_of_arts = get_art_csv_file()
     
     pattern_of_id_and_year = r"([^;]*);[^;]*;([^;]*);[^;]*(?:\r\n\d{1,3};|\r$)"
     matches_of_id_and_year = re.findall(pattern_of_id_and_year, content_of_arts)
@@ -120,10 +126,15 @@ def get_artist_id_and_year_from_art_table(content_of_arts):
     return list_of_artist_id, list_of_year
 
 
-def combine_data_of_art_table(work_title, artist_id, type, status, material, year):
+def combine_data_of_art_table():
 
     # 如果不相等怎么办。。。
     # for i in 
+
+    work_title = get_work_title_from_art_table()
+    type, status, material = get_other_info_from_art_table()
+    artist_id, year = get_artist_id_and_year_from_art_table()
+
 
     data_of_art_table = []
     for i in range(len(artist_id)):
@@ -151,17 +162,3 @@ def combine_data_of_art_table(work_title, artist_id, type, status, material, yea
     
 
 
-            
-
-# 这个是要写在driver file里面的
-
-# def main():
-#     content = get_art_csv_file()
-#     id, year = get_artist_id_and_year_from_art_table(content)
-#     type, status, material = get_other_info_from_art_table(content)
-#     title = get_work_title_from_art_table(content)
-#     data = combine_data_of_art_table(title, id, type, status, material, year)
-#     get_art_dataframe(data)
-
-# if __name__ == "__main__":
-#     main()
