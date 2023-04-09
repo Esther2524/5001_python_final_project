@@ -18,6 +18,12 @@ def get_art_csv_file():
     content_of_arts = response_arts_website.text
     return content_of_arts
 
+def replace_empty_with_unknown(original_list):
+    for i in range(len(original_list)):
+        if original_list[i] == "":
+            original_list[i] = "Unknown"
+
+    return original_list
 
 
 def get_work_title_from_art_table():
@@ -30,6 +36,8 @@ def get_work_title_from_art_table():
     matches_of_work_title = re.findall(pattern_of_work_title, content_of_arts)
     list_of_work_title = matches_of_work_title
 
+    list_of_work_title = replace_empty_with_unknown(list_of_work_title)
+    
     return list_of_work_title
     
 
@@ -75,6 +83,10 @@ def get_other_info_from_art_table():
         list_of_type.append(lst[0])
         list_of_status.append(lst[1])
         list_of_material.append(lst[2])
+
+    list_of_type = replace_empty_with_unknown(list_of_type)
+    list_of_status = replace_empty_with_unknown(list_of_status)
+    list_of_material = replace_empty_with_unknown(list_of_material)
 
     return list_of_type, list_of_status, list_of_material
     
@@ -123,6 +135,9 @@ def get_artist_id_and_year_from_art_table():
     # print(list_of_artist_id, list_of_year)
     # print(len(list_of_artist_id))
 
+    list_of_artist_id = replace_empty_with_unknown(list_of_artist_id)
+    list_of_year = replace_empty_with_unknown(list_of_year)
+
     return list_of_artist_id, list_of_year
 
 
@@ -140,22 +155,11 @@ def combine_data_of_art_table():
     for i in range(len(artist_id)):
         data_of_art_table.append([work_title[i], artist_id[i], type[i], status[i], material[i], year[i]])
     # print(data_of_art_table) 
+
+
     return data_of_art_table
 
-# def get_art_dataframe(data_of_art_table):
-    # data_of_art_table is a list of lists
 
-    
-    # dataframe_of_art = pd.DataFrame(data_of_art_table, columns = ["work title", "artist id", "type", "status", "material", "year"])
-
-    # print(dataframe_of_art.head(8))
-    # print(dataframe_of_art.tail(8))
-    # print(dataframe_of_art.info())
-    # print(dataframe_of_art.describe())
-    # print(dataframe_of_art.shape)
-
-    # print(df)
-    # return dataframe_of_art
 
 
 

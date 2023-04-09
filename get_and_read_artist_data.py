@@ -43,6 +43,12 @@ def get_artist_csv_file():
     # 错误的 pattern
     # pattern = r"\n(\d{1,3});([A-Z][\w]*)?;([A-Z][\w]+);"
 
+def replace_empty_with_unknown(original_list):
+    for i in range(len(original_list)):
+        if original_list[i] == "":
+            original_list[i] = "Unknown"
+
+    return original_list
 
 
 def get_basic_info_from_artist_table():
@@ -73,6 +79,10 @@ def get_basic_info_from_artist_table():
         list_of_artist_id.append(match[0])
         list_of_first_name.append(match[1])
         list_of_last_name.append(match[2])
+
+    list_of_artist_id = replace_empty_with_unknown(list_of_artist_id)
+    list_of_first_name = replace_empty_with_unknown(list_of_first_name)
+    list_of_last_name = replace_empty_with_unknown(list_of_last_name)
 
     return list_of_artist_id, list_of_first_name, list_of_last_name
 
@@ -106,6 +116,8 @@ def get_country_from_artist_table():
 
     # print(list_of_country)
     # print(len(list_of_country))
+
+    list_of_country = replace_empty_with_unknown(list_of_country)
 
     return list_of_country
     
@@ -150,19 +162,6 @@ def combine_data_of_artist_table():
 
 
 
-
-# 这个是要写在driver file里面的
-
-
-# def main():
-#     content = get_artist_csv_file()
-#     id, first_name, last_name = get_basic_info_from_artist_table(content)
-#     country = get_country_from_artist_table(content)
-#     data = combine_data_of_artist_table(id, first_name, last_name, country)
-#     get_artist_dataframe(data)
-
-# if __name__ == "__main__":
-#     main()
 
 
 
