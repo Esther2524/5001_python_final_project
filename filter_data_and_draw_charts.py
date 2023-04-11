@@ -1,6 +1,9 @@
 
 import matplotlib.pylab as plt
 
+from read_data_into_objects import *
+
+
 
 def classify_artworks_by_criterion(artworks, criterion):
 
@@ -36,11 +39,30 @@ def classify_artworks_by_criterion(artworks, criterion):
     return dic_of_artworks_by_criterion
 
 
-def draw_pie_chart(artworks_by_criterion, country):
+def display_chart_and_output_result(country):
+    
+
+    # get the data for the selected country
+    list_of_artist_objects, list_of_artwork_objects = read_data_into_objects_by_country(country)
+    
+    # classify artworks by type
+    dict_of_artworks = classify_artworks_by_criterion(list_of_artwork_objects, "type")
+
+    # output the result
+    # print(dict_of_artworks)
+    
+    # display the chart
+    display_pie_chart_by_country(dict_of_artworks, country)
+    
+
+    return dict_of_artworks
+
+
+def display_pie_chart_by_country(dict_of_artworks, country):
 
     fig, ax = plt.subplots()
     autopct_format = "%1.1f%%"
-    ax.pie(artworks_by_criterion.values(), labels = artworks_by_criterion.keys(), autopct = autopct_format)
+    ax.pie(dict_of_artworks.values(), labels=dict_of_artworks.keys(), autopct=autopct_format)
     ax.set_title(f"Artworks of artists from {country}")
 
     plt.show()
@@ -49,7 +71,7 @@ def draw_pie_chart(artworks_by_criterion, country):
 
 
 
-def draw_bar_chart(dict_of_artworks_by_criterion, country):
+def display_bar_chart(dict_of_artworks_by_criterion):
  
 
     # Create and show the bar chart
@@ -62,13 +84,13 @@ def draw_bar_chart(dict_of_artworks_by_criterion, country):
     ax.bar(x_values, y_values)
 
     # Set the x-axis label
-    ax.set_xlabel("Year")
+    ax.set_xlabel("Type")
 
     # Set the y-axis label
     ax.set_ylabel("Artwork Count")
 
     # Set the title of the chart
-    ax.set_title("Artwork Counts by Year")
+    ax.set_title("Artwork Counts by Type")
 
     # Set the y-axis range and interval
     max_value = max(y_values)
@@ -94,7 +116,7 @@ def draw_bar_chart(dict_of_artworks_by_criterion, country):
 #     plt.show()
 
 
-def draw_scatter_plot(dict_of_artworks_by_criterion):
+def display_scatter_plot(dict_of_artworks_by_criterion):
 
 
     # Create a scatter plot

@@ -46,9 +46,20 @@ class Artist:
         return dic_of_artworks_by_criterion
     
 
+    def __eq__(self, other):
+        if isinstance(other, type(self)):
+            if self.id == other.id: #
+                return True
+            else:
+                return False
+        else:
+            return False
 
-    def __repr__(self):
+    def __str__(self):
+        # 可以不用str吗
         return f"{self.first_name} {self.last_name} from {self.country}"
+    
+    
 
 
     

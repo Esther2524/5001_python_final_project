@@ -2,6 +2,11 @@
 
 
 import pandas as pd
+import matplotlib.pyplot as plt
+
+# 这两行语句都是需要的
+import tkinter as tk
+from tkinter import ttk
 
 from get_and_read_art_data import combine_data_of_art_table
 from get_and_read_artist_data import combine_data_of_artist_table
@@ -9,7 +14,12 @@ from get_and_read_artist_data import combine_data_of_artist_table
 from create_dataframe_from_dataset import create_dataframe
 from read_data_into_objects import *
 from filter_data_and_draw_charts import *
-# from user_interaction import *
+
+
+
+
+
+
 
 
 
@@ -44,23 +54,52 @@ def main():
     # 用户选择国家(Canada, USA, China, Germany, Italy, Japan)
    
     # 3.1 展示可选项，也就是所有国籍
-    # display_menu()
+    # create the GUI window
 
-    # 3.2 用户输入某个国籍
-    # user_input_country = input("Which country's artists are you most interested in?")
-    # 做成一个下拉
-    
-    # 假设
-    user_input_country = "USA"
+    # class view
+    # driver root
+    # GUI class sample
 
-    
-    
-    # 4. 根据用户输入建立对应country的list_of_objects
-    # read specified data into objects
+    root = tk.Tk()
 
-    # list_of_artist_objects里面既有艺术家本身的属性，也有艺术品以及艺术品这个class的属性
-    list_of_artist_objects, list_of_artwork_objects = read_data_into_objects_by_country(user_input_country)
+
+
+    root.title("Artwork Viewer")
+
+    # 
+    label1 = ttk.Label(root, text="Select a country:")
+    label1.pack(padx=10, pady=10)
+
+    options = df_artist["country"].unique()
+    # remove special characters from options
+    options = [option.replace("[", "").replace("]", "") for option in options]
+
+    # 错误的
+    # for i in range(len(options)):
+        # options[i] = options[i].replace("[", "").replace("]", "")
+
+
+    # 3.2
+    # state="readonly" is used to prevent the user from manually editing the value of a Tkinter Combobox 
+    combo = ttk.Combobox(root, values=options, state="readonly")
+    combo.pack(padx=10, pady=5)
+
+
+    # create a button to display the pie chart
+    button = ttk.Button(root, text="Show pie chart", command=lambda: display_chart_and_output_result(combo.get()))
+    # use pack method to display it
+    button.pack(padx=10, pady=10)
     
+ 
+
+    # 添加一些注释
+    # label2 = ttk.Label(root, text="analysis")
+    # label2.pack()
+
+    # start the GUI event loop
+    root.mainloop()
+
+
     # print(list_of_artwork_objects)
     # print(len(list_of_artwork_objects))
 
@@ -88,7 +127,7 @@ def main():
     # 4.3 再次与用户交互，也就是细分objects of artworks
     # 给予选择 type, year, material
 
-    user_option = "year"
+    # user_option = "year"
    
     # 4.3.1 根据种类来分类 (pie chart)
     # Create two lists for the types and corresponding counts of artwork
@@ -107,7 +146,7 @@ def main():
 
 
     # 4.4.3 根据year来分类 (pie chart)
-    artworks_by_criterion = classify_artworks_by_criterion(list_of_artwork_objects, user_option)
+    # artworks_by_criterion = classify_artworks_by_criterion(list_of_artwork_objects, user_option)
     
     # print(list_of_artwork_objects)
     # print(len(list_of_artwork_objects))

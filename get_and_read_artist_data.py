@@ -149,16 +149,7 @@ def combine_data_of_artist_table():
     return data_of_artist_table
 
 
-# def get_artist_dataframe(data_of_artist_table):
-    # dataframe_of_artist = pd.DataFrame(data_of_artist_table, columns=["artist id", "first name", "last name", "country"])
 
-    # print(dataframe_of_artist.head(8))
-    # print(dataframe_of_artist.tail(8))
-    # print(dataframe_of_artist.info())
-    # print(dataframe_of_artist.describe())
-    # print(dataframe_of_artist.shape)
-
-    # return data_of_artist_table
 
 
 

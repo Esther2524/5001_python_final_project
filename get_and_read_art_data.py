@@ -4,8 +4,6 @@ import re
 
 
 
-
-
 def get_art_csv_file():
 
     download_arts = "https://opendata.vancouver.ca/api/explore/v2.1/catalog/datasets/public-art/exports/csv?lang=en&timezone=America%2FLos_Angeles&use_labels=true&delimiter=%3B"
@@ -16,6 +14,12 @@ def get_art_csv_file():
 
     # content_of_arts = response_arts_website.content.decode('utf-8')
     content_of_arts = response_arts_website.text
+
+    # 注意这步
+    content_of_arts = content_of_arts.replace("; ", " ")
+    print(content_of_arts)
+
+
     return content_of_arts
 
 def replace_empty_with_unknown(original_list):
@@ -49,7 +53,7 @@ def get_other_info_from_art_table():
 
     content_of_arts = get_art_csv_file()
 
-    # 遇到大段文字我就直接跳过 regex前面部分的 regex后面部分的
+    # 遇到大段文字直接跳过 regex前面部分的 regex后面部分的
 
 
     # 提取type status site_address primary material art_url 
@@ -69,11 +73,14 @@ def get_other_info_from_art_table():
 
     # 分步操作
     pattern_of_type_and_status_and_material = r";([^;]*);([^;]*);[^;]*;[^;]*;([^;]*);https.*"
+    # pattern_of_type_and_status_and_material = r";([^;]*);([IND][^;]*);[^;]*;[^;]*;((?:[^;]*[;][^;]*|[^;]*));https.*cova.*;"
+    # pattern_of_type_and_status_and_material = r";([^;]*);([^;]*);[^;]*;[^;]*;(?:.*[;]\s.*|[^;]*);https.*cova.*;"
+
     matches_of_type_and_status_and_material = re.findall(pattern_of_type_and_status_and_material, content_of_arts)
     list_of_type_and_status_and_material = matches_of_type_and_status_and_material
 
-    # print(matches_of_type_and_status_and_material)
-    # print(len(matches_of_type_and_status_and_material))
+    print(matches_of_type_and_status_and_material)
+    print(len(matches_of_type_and_status_and_material))
 
     list_of_type = []
     list_of_status = []
@@ -141,9 +148,19 @@ def get_artist_id_and_year_from_art_table():
     return list_of_artist_id, list_of_year
 
 
+def delete_data(original_data):
+    data_after_cleaning = original_data.copy()
+    for i in range(len(original_data)):
+        for item in original_data[i]:
+            if ";" in item:
+                del data_after_cleaning[i]
+    return data_after_cleaning
+
+
+
 def combine_data_of_art_table():
 
-    # 如果不相等怎么办。。。
+    # 如果不相等
     # for i in 
 
     work_title = get_work_title_from_art_table()
@@ -163,6 +180,6 @@ def combine_data_of_art_table():
 
 
 
-    
 
 
+get_other_info_from_art_table()

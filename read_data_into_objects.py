@@ -73,7 +73,7 @@ def read_data_into_objects_by_country(chosen_country):
 
     
 # 测试测试测试
-# list_of_artist_objects, list_of_artwork_objects = read_data_into_objects_by_country("USA")
+list_of_artist_objects, list_of_artwork_objects = read_data_into_objects_by_country("Canada")
 # print(list_of_artist_objects)
 # print(len(list_of_artist_objects))
 # print(list_of_artwork_objects)
@@ -90,6 +90,11 @@ def read_data_into_objects_by_country(chosen_country):
 # for i in list_of_artist_objects:
 #     if i.id == "555":
 #         print(i.artworks)
+
+for i in list_of_artwork_objects:
+    # if i.type == "No longer in place":
+    if i.id == "420":
+        print(i.year)
 
 
 
