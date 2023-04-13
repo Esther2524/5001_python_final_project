@@ -91,10 +91,11 @@ list_of_artist_objects, list_of_artwork_objects = read_data_into_objects_by_coun
 #     if i.id == "555":
 #         print(i.artworks)
 
-for i in list_of_artwork_objects:
+# 错位：已解决
+# for i in list_of_artwork_objects:
     # if i.type == "No longer in place":
-    if i.id == "420":
-        print(i.year)
+    # if i.id == "420":
+    #     print(i.year)
 
 
 

@@ -15,14 +15,17 @@ def get_art_csv_file():
     # content_of_arts = response_arts_website.content.decode('utf-8')
     content_of_arts = response_arts_website.text
 
-    # 注意这步
+    # material里面有; 会导致错位,出现type里面有no longer in place和in place的选项
     content_of_arts = content_of_arts.replace("; ", " ")
-    print(content_of_arts)
+    # print(content_of_arts)
 
 
     return content_of_arts
 
 def replace_empty_with_unknown(original_list):
+    '''
+    used to clean data
+    '''
     for i in range(len(original_list)):
         if original_list[i] == "":
             original_list[i] = "Unknown"
@@ -34,10 +37,14 @@ def get_work_title_from_art_table():
 
     content_of_arts = get_art_csv_file()
 
-    pattern_of_work_title = r"\r\n\d{1,3};([^;]*);"
+    # noid, title, no, type, status, no, no, material, http, no, no, neighborhood, no, no, no, no, id, no, year
+
+    pattern_of_work_title = r"\r\n\d{1,};([^;]*);"
 
     # 提取work_title
     matches_of_work_title = re.findall(pattern_of_work_title, content_of_arts)
+    # print(matches_of_work_title)
+    # print(len(matches_of_work_title))
     list_of_work_title = matches_of_work_title
 
     list_of_work_title = replace_empty_with_unknown(list_of_work_title)
@@ -72,15 +79,19 @@ def get_other_info_from_art_table():
 
 
     # 分步操作
+    # pattern_of_type_and_status_and_material = r";([^;]*);([^;]*);[^;]*;[^;]*;([^;]*);https[^;]*;[^;]*;[^;]*;([^;]*);"
+
+    # 正确的
     pattern_of_type_and_status_and_material = r";([^;]*);([^;]*);[^;]*;[^;]*;([^;]*);https.*"
+
     # pattern_of_type_and_status_and_material = r";([^;]*);([IND][^;]*);[^;]*;[^;]*;((?:[^;]*[;][^;]*|[^;]*));https.*cova.*;"
     # pattern_of_type_and_status_and_material = r";([^;]*);([^;]*);[^;]*;[^;]*;(?:.*[;]\s.*|[^;]*);https.*cova.*;"
 
     matches_of_type_and_status_and_material = re.findall(pattern_of_type_and_status_and_material, content_of_arts)
     list_of_type_and_status_and_material = matches_of_type_and_status_and_material
 
-    print(matches_of_type_and_status_and_material)
-    print(len(matches_of_type_and_status_and_material))
+    # print(matches_of_type_and_status_and_material)
+    # print(len(matches_of_type_and_status_and_material))
 
     list_of_type = []
     list_of_status = []
@@ -148,14 +159,6 @@ def get_artist_id_and_year_from_art_table():
     return list_of_artist_id, list_of_year
 
 
-def delete_data(original_data):
-    data_after_cleaning = original_data.copy()
-    for i in range(len(original_data)):
-        for item in original_data[i]:
-            if ";" in item:
-                del data_after_cleaning[i]
-    return data_after_cleaning
-
 
 
 def combine_data_of_art_table():
@@ -177,9 +180,7 @@ def combine_data_of_art_table():
     return data_of_art_table
 
 
-
-
-
-
-
 get_other_info_from_art_table()
+
+
+

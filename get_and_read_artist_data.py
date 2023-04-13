@@ -7,9 +7,13 @@ import re
 
 def get_artist_csv_file():
     download_artists = "https://opendata.vancouver.ca/api/explore/v2.1/catalog/datasets/public-art-artists/exports/csv?lang=en&timezone=America%2FLos_Angeles&use_labels=true&delimiter=%3B"
-    # if response_artists_website.status_code == 200:
+    
     response_artists_website = requests.get(download_artists)
+    # if response_artists_website.status_code == 200:
+        # raise
     content_of_artists = response_artists_website.content.decode('utf-8')
+    # 没有用，因为690里面的文本是xxx;xxx
+    # content_of_artists = content_of_artists.replace("; ", " ")
 
     return content_of_artists
 
@@ -57,19 +61,20 @@ def get_basic_info_from_artist_table():
 
     # 基本信息的匹配
     # id, first_name, last_name
-    pattern_of_basic_info = r"\r\n(\d{1,3});([^;]*);([^;]*);http.*\d{1,3};"
+    pattern_of_basic_info = r"\r\n(\d{1,});([^;]*);([^;]*);http.*\d{1,3};"
 
     # 好像没有区别-加不加问号
     # pattern_of_basic_info = r"\r\n(\d{1,3});([^;]*)?;([^;]*);(http.*?)\d{1,3};"
     # pattern = r";([^;]*)?;([^;]*)?;([^;]*)?;\n"
 
     matches_of_basic_info = re.findall(pattern_of_basic_info, content_of_artists)
-    # print(matches)
-    # print(len(matches))
+    # print(matches_of_basic_info)
+    # print(len(matches_of_basic_info))
 
     list_of_artist_id = []
     list_of_first_name = []
     list_of_last_name = []
+
     
 
     # if not matches:
@@ -80,9 +85,13 @@ def get_basic_info_from_artist_table():
         list_of_first_name.append(match[1])
         list_of_last_name.append(match[2])
 
+
     list_of_artist_id = replace_empty_with_unknown(list_of_artist_id)
     list_of_first_name = replace_empty_with_unknown(list_of_first_name)
     list_of_last_name = replace_empty_with_unknown(list_of_last_name)
+
+
+    
 
     return list_of_artist_id, list_of_first_name, list_of_last_name
 
@@ -146,8 +155,13 @@ def combine_data_of_artist_table():
     for i in range(len(artist_id)):
         data_of_artist_table.append([artist_id[i], first_name[i], last_name[i], country[i]])
 
+    # print(data_of_artist_table)
+    # print(len(data_of_artist_table))
+
     return data_of_artist_table
 
+
+# combine_data_of_artist_table()
 
 
 

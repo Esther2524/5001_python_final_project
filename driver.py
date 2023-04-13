@@ -8,11 +8,9 @@ import matplotlib.pyplot as plt
 import tkinter as tk
 from tkinter import ttk
 
-from get_and_read_art_data import combine_data_of_art_table
-from get_and_read_artist_data import combine_data_of_artist_table
+
 
 from create_dataframe_from_dataset import create_dataframe
-from read_data_into_objects import *
 from filter_data_and_draw_charts import *
 
 

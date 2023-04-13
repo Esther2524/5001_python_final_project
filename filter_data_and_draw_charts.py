@@ -49,7 +49,7 @@ def display_chart_and_output_result(country):
     dict_of_artworks = classify_artworks_by_criterion(list_of_artwork_objects, "type")
 
     # output the result
-    # print(dict_of_artworks)
+    print(dict_of_artworks)
     
     # display the chart
     display_pie_chart_by_country(dict_of_artworks, country)
