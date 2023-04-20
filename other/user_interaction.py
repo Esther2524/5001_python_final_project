@@ -9,8 +9,8 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolb
 from tkinter import messagebox
 
 from read_data_into_objects import *
-from get_and_read_art_data import combine_data_of_art_table
-from get_and_read_artist_data import combine_data_of_artist_table
+from get_and_clean_art_data import combine_data_of_art_table
+from get_and_clean_artist_data import combine_data_of_artist_table
 
 artist_data = combine_data_of_artist_table()
 art_data = combine_data_of_art_table()

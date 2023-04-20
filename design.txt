@@ -1,0 +1,116 @@
+CS5001
+Final Project
+Spring 2023
+MyName: Zhixiao Wang
+
+
+datasets must be included
+objects
+Analysis
+how to store the results
+what data you intend to visulize
+what user
+
+Directory Structure is descriptive and easy to follow
+MVC framework applied
+
+1.Data Sets:
+
+Public art
+URL: https://opendata.vancouver.ca/api/explore/v2.1/catalog/datasets/public-art/exports/csv?lang=en&timezone=America%2FLos_Angeles&use_labels=true&delimiter=%3B
+
+Public art - Artists
+URL: https://opendata.vancouver.ca/api/explore/v2.1/catalog/datasets/public-art-artists/exports/csv?lang=en&timezone=America%2FLos_Angeles&use_labels=true&delimiter=%3B
+
+
+2. Design of the whole program
+
+I will explore the relationship between the nationality of the artists and the type of their artworks. 
+
+First, I extract data from these websites above and clean data, then I will get two lists of lists, data_of_artist_table and data_of_art_table. To get a general idea of what the two lists contain, I convert them into dataframes using pandas.
+
+After the user selects a country, I will create 'a list of artist objects' by the selected country, which can be called reading data into objects. It is the 'artist id' that links the two tables. That's why I create 'a list of artwork objects' based on the generated 'a list of artist objects'.
+
+The 'country' attribute of all the objects in 'a list of artwork objects' is the same and is, of course, the country selected by the user.
+
+Based on the various attributes in the objects of 'the list of artwork objects', such as type, status, material, year, we can further analyze. This is also the basis of my diagramming.
+
+
+
+3.Analysis
+
+After selecting a country, users can freely choose the category of artwork they want to see and get more detailed information.
+
+For example, from this output charts and results, I can say artists from Canada prefer to create sculptural artworks(25.6%), while artists from Germany tend to create mural artworks(40%). Also, I find that most of artworks created by Canadian artists are located in Downtown(30.3%).
+
+This is not a general conclusion because the samples, namely the datasets, have bias. But I offer a generalizable programming logic that can be used to study the preferences of artists of different nationalities in creating artworks.
+
+
+
+4.Data Structure
+
+The original data from url is saved in a list of lists: data_of_artist_table, data_of_art_table (In the file get_and_read_artist_data.py and get_and_read_art_data.py)
+
+The object created by the user's option is saved in a list of objects: list_of_artist_objects, list_of_artwork_objects (In the file read_data_into_objects.py)
+(reading data into objects after user's selection)
+
+The analysis will use list of artwork objects
+
+
+The output result is saved in a dictionary: dict_of_artworks (In the file filter_data_and_draw_charts.py, in the function display_chart_and_output_result())
+
+In user interaction, I use the data frame to give the user a sequence of choices: df_artist, df_art (in the file data_dashboard.py)
+
+
+
+5.Visulization
+
+The user selects a country and a category of artworks. A button is created that, when clicked, displays a pie/bar chart of the distribution of all artworks created by artists from the selected country by type, material, status, and year.
+
+The user can select different options each time to get different pictures, so that some conclusions can be drawn.
+
+
+
+
+
+PS: here is a simple example of the program
+
+The user will choose a country
+if user_choice == "Canada"
+
+we create a list of artist objects, for example:
+list_of_artist_object = [artist123, artist122, artist999]
+
+(There could b a collaboration of artists)
+artist 123 <-> artwork "Sunset"
+artist 122 <-> artwork "Sunset"
+artist 999 <-> artwork "Angel"
+artist 888 <-> artwork "Sky"
+
+'artist id' links the artist table and artwork table
+
+Next, we create the list of artwork objects based on list of artist objects
+
+id = 123 -> create a artwork object
+id = 122 -> create a artwork object
+id = 999 -> create a artwork object
+id = 888 -> create a artwork object
+
+list_of_artwork_object = ["Sunset", "Sunset", "Angel", "Sky"]
+
+We can delete the duplicates in the list_of_artwork_object using hash method and equal method
+
+Then we will get,
+list_of_artwork_object = ["Sunset", "Angel", "Sky"]
+
+The user will choose a category of artworks, from type, status, material, year, neighbourhood
+if user_category == "type"
+
+"Sunset".type = "painting"
+"Angel".type = "sculpture"
+"Sky".type = "painting"
+
+We will create a dict to save the result
+{"painting": 2, "sculpture": 1}
+
+Finally, we draw pie/bar chart based on this dictionary

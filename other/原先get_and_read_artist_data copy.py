@@ -6,18 +6,39 @@ import re
 
 
 def get_artist_csv_file():
-    download_artists = "https://opendata.vancouver.ca/api/explore/v2.1/catalog/datasets/public-art-artists/exports/csv?lang=en&timezone=America%2FLos_Angeles&use_labels=true&delimiter=%3B"
-    
-    response_artists_website = requests.get(download_artists)
-    # if response_artists_website.status_code == 200:
-        # raise
-    content_of_artists = response_artists_website.content.decode('utf-8')
-    # 没有用，因为690里面的文本是xxx;xxx
-    # content_of_artists = content_of_artists.replace("; ", " ")
+    '''
+    Function: 
+        get_art_csv_file -- Read a CSV file containing data from a given URL, cleans the data, and returns the contents as a string.
+    Parameters: 
+        Nothing
+    Returns: 
+        content_of_arts -- a string, containing the contents of the CSV file
+    '''
+    try:
+        download_artists = "https://opendata.vancouver.ca/api/explore/v2.1/catalog/datasets/public-art-artists/exports/csv?lang=en&timezone=America%2FLos_Angeles&use_labels=true&delimiter=%3B"
+        
+        response_artists_website = requests.get(download_artists)
+        if response_artists_website.status_code != 200:
+            raise requests.exceptions.HTTPError(f"Error occurred in get_artist_csv_file(): status code {response_artists_website.status_code}")
+        
+        content_of_artists = response_artists_website.text
 
-    return content_of_artists
+        # 没有用，因为690里面的文本是xxx;xxx
+        # content_of_artists = content_of_artists.replace("; ", " ")
 
+        return content_of_artists
 
+    except requests.exceptions.HTTPError as he:
+        print(type(he), he)
+
+    except ConnectionError as ce:
+        print("ConnectionError occurred in get_artist_csv_file()", type(ce), ce)
+
+    except TimeoutError as te:
+        print("TimeoutError occurred in get_artist_csv_file()", type(te), te)
+
+    except requests.RequestException as re:
+        print("Other Errors occurred in get_artist_csv_file().", type(re), re)
 
     
 

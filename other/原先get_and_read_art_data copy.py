@@ -2,31 +2,66 @@
 import requests
 import re
 
+STATUS_CODE = 200
 
 
 def get_art_csv_file():
-
-    download_arts = "https://opendata.vancouver.ca/api/explore/v2.1/catalog/datasets/public-art/exports/csv?lang=en&timezone=America%2FLos_Angeles&use_labels=true&delimiter=%3B"
-    response_arts_website = requests.get(download_arts)
-
-    if response_arts_website.status_code != 200:
-        raise 
-
-    # content_of_arts = response_arts_website.content.decode('utf-8')
-    content_of_arts = response_arts_website.text
-
-    # material里面有; 会导致错位,出现type里面有no longer in place和in place的选项
-    content_of_arts = content_of_arts.replace("; ", " ")
-    # print(content_of_arts)
+    '''
+    Function: 
+        get_art_csv_file -- Read a CSV file containing data from a given URL, cleans the data, and returns the contents as a string.
+    Parameters: 
+        Nothing
+    Returns: 
+        content_of_arts -- a string, containing the contents of the CSV file
+    
+    '''
 
 
-    return content_of_arts
+    try:
+        download_arts = "https://opendata.vancouver.ca/api/explore/v2.1/catalog/datasets/public-art/exports/csv?lang=en&timezone=America%2FLos_Angeles&use_labels=true&delimiter=%3B"
+        response = requests.get(download_arts)
+
+        if response.status_code != 200:
+            raise requests.exceptions.HTTPError(f"Error occurred in get_art_csv_file(): status code {response.status_code}")
+        
+        # content_of_arts = response_arts_website.content.decode('utf-8')
+        content_of_arts = response.text
+
+        # material里面有; 会导致错位,出现type里面有no longer in place和in place的选项
+        # Clean the data by replacing semicolons followed by a space with just a space.
+        content_of_arts = content_of_arts.replace("; ", " ")
+        return content_of_arts
+        
+       
+    except requests.exceptions.HTTPError as he:
+        print(type(he), he)
+
+    except ConnectionError as ce:
+        print("ConnectionError occurred in get_art_csv_file()", type(ce), ce)
+
+    except TimeoutError as te:
+        print("TimeoutError occurred in get_art_csv_file()", type(te), te)
+
+    except requests.RequestException as re:
+        print("Other Errors occurred in get_art_csv_file().", type(re), re)
+    
+
+
+    
+
 
 def replace_empty_with_unknown(original_list):
     '''
-    used to clean data
+    Function: 
+        Replaces empty values in a list with the string "Unknown".
+    Parameters: 
+        original_list -- a list of values to be checked and modified.
+    Return: 
+        original_list -- the modified list.
     '''
     for i in range(len(original_list)):
+
+        # If the item is an empty string, replace it with "Unknown".
         if original_list[i] == "":
             original_list[i] = "Unknown"
 
@@ -34,27 +69,35 @@ def replace_empty_with_unknown(original_list):
 
 
 def get_work_title_from_art_table():
+    '''
+    Function: 
+        get_work_title_from_art_table -- Extracts the titles of public art works from a CSV file, and returns a list of the titles.
+    Parameters:
+        Nothing
+    Returns: 
+        list_of_work_title -- A list of the titles of public art works.
+    '''
 
     content_of_arts = get_art_csv_file()
 
-    # noid, title, no, type, status, no, no, material, http, no, no, neighborhood, no, no, no, no, id, no, year
-
+    # work_id, title, no, type, status, no, no, material, http, no, no, neighborhood, no, no, no, no, id, no, year
+    # Define a regular expression pattern for extracting the titles of public art works
     pattern_of_work_title = r"\r\n\d{1,};([^;]*);"
 
-    # 提取work_title
+    # extract the data of 'work_title'
     matches_of_work_title = re.findall(pattern_of_work_title, content_of_arts)
+
     # print(matches_of_work_title)
     # print(len(matches_of_work_title))
+
     list_of_work_title = matches_of_work_title
 
+    # Clean the list of work titles by replacing empty strings with "Unknown".
     list_of_work_title = replace_empty_with_unknown(list_of_work_title)
     
     return list_of_work_title
     
 
-    # print(list_of_work_title)
-    # print(len(list_of_work_title))
-    # 670个
 
 def get_other_info_from_art_table():
 
@@ -77,12 +120,11 @@ def get_other_info_from_art_table():
     # print(list_of_other_info)
     # print(len(list_of_other_info))
 
-
     # 分步操作
-    # pattern_of_type_and_status_and_material = r";([^;]*);([^;]*);[^;]*;[^;]*;([^;]*);https[^;]*;[^;]*;[^;]*;([^;]*);"
+    pattern_of_type_and_status_and_material = r";([^;]*);([^;]*);[^;]*;[^;]*;([^;]*);https[^;]*;[^;]*;[^;]*;([^;]*);"
 
-    # 正确的
-    pattern_of_type_and_status_and_material = r";([^;]*);([^;]*);[^;]*;[^;]*;([^;]*);https.*"
+    # 正确的,不过没有neighbourhood
+    # pattern_of_type_and_status_and_material = r";([^;]*);([^;]*);[^;]*;[^;]*;([^;]*);https.*"
 
     # pattern_of_type_and_status_and_material = r";([^;]*);([IND][^;]*);[^;]*;[^;]*;((?:[^;]*[;][^;]*|[^;]*));https.*cova.*;"
     # pattern_of_type_and_status_and_material = r";([^;]*);([^;]*);[^;]*;[^;]*;(?:.*[;]\s.*|[^;]*);https.*cova.*;"
@@ -96,17 +138,20 @@ def get_other_info_from_art_table():
     list_of_type = []
     list_of_status = []
     list_of_material = []
+    list_of_neighbourhood = []
 
     for lst in list_of_type_and_status_and_material:
         list_of_type.append(lst[0])
         list_of_status.append(lst[1])
         list_of_material.append(lst[2])
+        list_of_neighbourhood.append(lst[3])
 
     list_of_type = replace_empty_with_unknown(list_of_type)
     list_of_status = replace_empty_with_unknown(list_of_status)
     list_of_material = replace_empty_with_unknown(list_of_material)
+    list_of_neighbourhood = replace_empty_with_unknown(list_of_neighbourhood)
 
-    return list_of_type, list_of_status, list_of_material
+    return list_of_type, list_of_status, list_of_material, list_of_neighbourhood
     
     
 
@@ -167,20 +212,20 @@ def combine_data_of_art_table():
     # for i in 
 
     work_title = get_work_title_from_art_table()
-    type, status, material = get_other_info_from_art_table()
+    type, status, material, neighbourhood = get_other_info_from_art_table()
     artist_id, year = get_artist_id_and_year_from_art_table()
 
 
     data_of_art_table = []
     for i in range(len(artist_id)):
-        data_of_art_table.append([work_title[i], artist_id[i], type[i], status[i], material[i], year[i]])
+        data_of_art_table.append([work_title[i], artist_id[i], type[i], status[i], material[i], neighbourhood[i], year[i]])
     # print(data_of_art_table) 
 
 
     return data_of_art_table
 
 
-get_other_info_from_art_table()
+# get_other_info_from_art_table()
 
 
 
