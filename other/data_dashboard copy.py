@@ -21,7 +21,7 @@ import pandas as pd
 
 from get_and_clean_art_data import *
 from get_and_clean_artist_data import *
-from filter_data_and_draw_charts import *
+from other.filter_data_and_draw_charts import *
 
 
 PADX_VALUE = 10

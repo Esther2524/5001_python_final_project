@@ -24,15 +24,15 @@ If you want to test this program, I suggest you choose the USA because the data 
 # pandas dataframe 不可以拿来做 analysis
 # 应该用list of objects
 
-import tkinter as tk
-from tkinter import ttk
+
 import pandas as pd
 
 
 from get_and_clean_art_data import *
 from get_and_clean_artist_data import *
-from filter_data_and_draw_charts import *
+
 from viewer import *
+from class_of_view import *
 
 
 
@@ -59,8 +59,7 @@ def main():
         df_artist = pd.DataFrame(artist_data, columns=["artist id", "first name", "last name", "country"])
         df_art = pd.DataFrame(art_data, columns = ["work title", "artist id", "type", "status", "material", "neighbourhood", "year"])
 
-        # data frame 可以用来生成objects
-        # 但是一旦生成list of objects之后，就不能再用data frame进行后面的分析了
+
 
         # test
         # print(df_artist.head(4))
@@ -77,7 +76,15 @@ def main():
         # user will choose the country of artists and the category of their artworks
         # create the GUI window
 
+
+        # 使用view文件
         create_start_page(df_art, df_artist)
+
+        # 使用class
+        # root = TkinterApp(df_artist, df_art)
+        # root.mainloop()
+        
+
         
         
 
