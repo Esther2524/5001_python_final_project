@@ -26,13 +26,13 @@ If you want to test this program, I suggest you choose the USA because the data 
 
 
 import pandas as pd
+import tkinter as tk
 
 
 from get_and_clean_art_data import *
 from get_and_clean_artist_data import *
 
 from viewer import *
-from class_of_view import *
 
 
 
@@ -54,39 +54,26 @@ def main():
         artist_data = get_public_arist_data(id, first_name, last_name, country)
 
 
-        # 2.create two data frames according to these two lists of lists
-        # data frames are used in user interaction to provide a sequence of options in the user interaction)
+        # 2.Create two data frames according to these two lists of lists
+        # data frames are used in user interaction to provide a sequence of options
         df_artist = pd.DataFrame(artist_data, columns=["artist id", "first name", "last name", "country"])
         df_art = pd.DataFrame(art_data, columns = ["work title", "artist id", "type", "status", "material", "neighbourhood", "year"])
 
-
-
-        # test
-        # print(df_artist.head(4))
-        # print(df_artist.describe())
-        # print(df_art.head(4))
-        # print(df_art.describe())
-        # print(df_artist.info())
-        # print(df_art.info())
-        
-        # class View (GUI class?)
-        # put root in driver
-        
-        # 3. Start interacting with the user
+                
+        # 3. Interacting with the user
+        # 生成objects是在交互中
         # user will choose the country of artists and the category of their artworks
-        # create the GUI window
-
-
-        # 使用view文件
-        create_start_page(df_art, df_artist)
-
-        # 使用class
-        # root = TkinterApp(df_artist, df_art)
-        # root.mainloop()
         
+        # create the top-level window
+        root = tk.Tk()
+        frames = create_child_frames(root)
 
-        
-        
+        # 解释一下这里使用df只是为了提供选项
+        # 实际上的分析是基于list of objects 因此会在viewer文件里面
+        create_start_page(df_art, df_artist, frames)
+
+        root.mainloop()
+
 
     except NameError as ne:
         print("NameError occurred")
@@ -94,6 +81,8 @@ def main():
         print(type(te), te)
     except ValueError as ve:
         print(type(te), te)
+    except AttributeError as ae:
+        print("还没有整理")
     except Exception as e:
         print("Other errors occurred", type(e), e)
 

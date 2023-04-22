@@ -1,4 +1,7 @@
+'''
+This is a 
 
+'''
 
 
 def classify_artworks_by_criterion(artworks, criterion):
@@ -59,14 +62,38 @@ def classify_artworks_by_criterion(artworks, criterion):
 
 def filter_artworks_by_attribute_value(artworks, attribute, value):
     '''
-    Returns a list of artwork objects from the input list that have the specified attribute set to the specified value.
+    Function:
+        filter_artworks_by_attribute_value -- return a list of artwork objects from the input list that have the specified attribute set to the specified value.
+
+    Parameter:
+        artworks -- a list of artwork objects to filter.
+        attribute -- a string, specifying the attribute to filter on.
+        value -- a string, the value to match the specified attribute against.
+
+    Return:
+        filtered_artworks -- a list of artwork objects that have the specified attribute set to the specified value.
+
+    Error handling:
+        raise 
+        
+    Example:
+    Attribute and value are user-selected
+    If attribute is year and the value is 2016, then the filtered_artworks is a list of artwork objects that all objects' 'year' attribute is equal to 2016
     '''
 
+    if not isinstance(artworks, list):
+        raise TypeError(f"{artworks} should be a list")
+    
+    if not isinstance(attribute, str):
+        raise TypeError(f"{attribute} should be a str")
+    
+    if not isinstance(value, str):
+        raise TypeError(f"{value} should be a str")
+    
     filtered_artworks = []
 
     for artwork in artworks:
         artwork_attribute = getattr(artwork, attribute)
-        # print(artwork_attribute)
         if artwork_attribute == value:
             filtered_artworks.append(artwork)
 
