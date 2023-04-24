@@ -11,7 +11,6 @@ import requests
 import re
 
 STATUS_CODE = 200
-ART_URL = "https://opendata.vancouver.ca/api/explore/v2.1/catalog/datasets/public-art/exports/csv?lang=en&timezone=America%2FLos_Angeles&use_labels=true&delimiter=%3B"
 
 TYPE_INDEX = 0
 STATUS_INDEX = 1
@@ -24,12 +23,12 @@ MISSING_VALUE = ""
 REPLACED_VALUE = "Unknown"
 
 
-def get_art_csv_file():
+def get_art_csv_file(art_url):
     '''
     Function: 
         get_art_csv_file -- Read a CSV file containing data from a given URL, cleans the data, and returns the contents as a string.
     Parameters: 
-        Nothing
+        art_url -- a string, the url of artwork data
     Returns: 
         content_of_arts -- a string, containing the infomation of the CSV file 
     Error handling:
@@ -37,16 +36,16 @@ def get_art_csv_file():
         ConnectionError occurred if network problem occurred
         TimeoutError occurred if request times out
         requests.RequestException occurred if other errors occurred
+        raise TypeError if art_url is not a str
     '''
 
     try:
         
-        download_arts = ART_URL
-        response_of_art = requests.get(download_arts)
-
-        # if response.status_code != STATUS_CODE:
-            # raise requests.exceptions.HTTPError(f"Error occurred in get_art_csv_file(): status code {response.status_code}")
+        if not isinstance(art_url, str):
+            raise TypeError(f"{art_url} should be a str")
         
+        response_of_art = requests.get(art_url)
+
         response_of_art.raise_for_status()
 
         content_of_arts = response_of_art.text
@@ -54,7 +53,7 @@ def get_art_csv_file():
         # Clean the data by replacing semicolons followed by a space with just a space.
         content_of_arts = content_of_arts.replace("; ", " ")
         return content_of_arts
-        
+    
        
     except requests.exceptions.HTTPError as he:
         print("HTTPError occurred in get_art_csv_file()", type(he), he)
@@ -144,7 +143,7 @@ def get_other_info_from_art_table(content_of_arts):
     '''
     
     if not isinstance(content_of_arts, str):
-        raise TypeError(f"in get_other_info_from_art_table(), {content_of_arts} should be a string")
+        raise TypeError(f"In get_other_info_from_art_table(), {content_of_arts} should be a string")
 
     # extract the data of type, status, material, neighbourhood
     pattern_of_other_info = r";([^;]*);([^;]*);[^;]*;[^;]*;([^;]*);https[^;]*;[^;]*;[^;]*;([^;]*);"
@@ -191,11 +190,9 @@ def get_artist_id_and_year_from_art_table(content_of_arts):
         raise TypeError(f"in get_artist_id_and_year_from_art_table(), {content_of_arts} should be a string")
 
     # extract the data of year
-    pattern_of_id_and_year = r"([^;]*);[^;]*;([^;]*);[^;]*(?:\r\n\d{1,3};|\r$)"
+    pattern_of_id_and_year = r"([^;]*);[^;]*;([^;]*);[^;]*(?:\r\n\d{1,};|\r$)"
     matches_of_id_and_year = re.findall(pattern_of_id_and_year, content_of_arts)
 
-    # print(matches_of_artist_id)
-    # print(len(matches_of_artist_id))
 
     # creates a new list of matches starting from the second match because the first match is the header row.
     list_of_id_and_year = matches_of_id_and_year[1::]
@@ -206,9 +203,6 @@ def get_artist_id_and_year_from_art_table(content_of_arts):
     for lst in list_of_id_and_year:
         list_of_artist_id.append(lst[ARTIST_ID_INDEX])
         list_of_year.append(lst[YEAR_INDEX])
-    
-    # print(list_of_artist_id, list_of_year)
-    # print(len(list_of_artist_id))
 
     # replace any empty values with the string "unknown"
     list_of_artist_id = replace_art_empty_with_unknown(list_of_artist_id)
@@ -275,7 +269,6 @@ def get_public_art_data(work_title, type, status, material, neighbourhood, artis
     for i in range(len(artist_id)):
         data_of_art_table.append([work_title[i], artist_id[i], type[i], status[i], material[i], neighbourhood[i], year[i]])
     
-    # print(data_of_art_table) 
     return data_of_art_table
 
 

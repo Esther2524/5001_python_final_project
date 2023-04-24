@@ -36,7 +36,7 @@ class Artist:
         __eq__(): a method that compares the id of two artist objects and returns True if they are the same, False otherwise.
             Parameter:
                 self -- the current object
-                other -- the other Artist instance
+                other_artist -- the other Artist instance
             Return:
                 returns True if their ids are the same, False otherwise.
             Error handling:
@@ -63,8 +63,6 @@ class Artist:
         self.first_name = first_name
         self.last_name = last_name
         self.country = country
-        # A list to hold all the artworks for this artist
-        self.artworks = []
 
     def __eq__(self, other_artist):
         if not isinstance(other_artist, Artist):

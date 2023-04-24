@@ -1,0 +1,144 @@
+CS5001
+Final Project -- Artwork Viewer
+
+Spring 2023
+MyName: Zhixiao Wang
+
+
+
+1.Data Sets:
+
+Public art
+URL: https://opendata.vancouver.ca/api/explore/v2.1/catalog/datasets/public-art/exports/csv?lang=en&timezone=America%2FLos_Angeles&use_labels=true&delimiter=%3B
+
+Public art - Artists
+URL: https://opendata.vancouver.ca/api/explore/v2.1/catalog/datasets/public-art-artists/exports/csv?lang=en&timezone=America%2FLos_Angeles&use_labels=true&delimiter=%3B
+
+
+
+2. Design of the whole program
+
+I will explore the relationship between artists' nationality and the type of artworks they create.
+
+First, I extract data from these websites above and clean data by replacing empty with "Unknown", then I will get two lists of lists, data_of_artist_table and data_of_art_table. I convert them into dataframes using pandas, since they will be used to provide options for users in user interation.
+
+After the user selects a country, I will create 'a list of artist objects' by the selected country, which can be called reading data into objects. It is the 'artist id' that links the two tables. That's why I create 'a list of artwork objects' based on the generated 'a list of artist objects'.
+
+The 'country' attribute of all the objects in 'a list of artwork objects' is the same and is, of course, the country selected by the user.
+
+Based on the various attributes in the objects of 'the list of artwork objects', such as type, status, material, neighbourhood, year, we can further analyze. These attributes are also the basis of my diagramming.
+
+
+
+3. Classes and Objects
+
+There are two classes, Artwork and Artist. In the first user selection, the user will choose the 'country' and the 'first_category'. The 'first_category' can be type, status, material, neighbourhood, and year. 
+
+The program will create a list of artist objects based on the user-selected country first, since 'country' is an Artist attribute. Then it generates the corresponding list of artwork objects based on the 'artist_id' shared by two classes (two datasets). All the next data analysis is based on this list of artwork objects.
+
+In the second selection, the program filters the list of artwork objects based on the user's first selection. This new filtered list of artwork objects is generated from the original list of artwork objects and will be used for further analysis.
+
+
+
+4. Data Analysis
+
+In this program, there are two types of data analysis, the first is the preliminary analysis on page one, and the other is the further analysis on page two.
+
+Preliminary Analysis on Page One: 
+
+After selecting a country and a category, users can see the distribution of artworks. For example, 25.6% of Canadian artists' artworks are sculptures, while 40% of artworks created by German artists are murals.
+
+Further Analysis on Page Two: 
+
+Based on the first selection, user can choose a specific value of the first category and a new category and get detailed information about the artworks from this country. For example, if in the first selection, we choose USA and year, then we will see a bar chart indicating how many artworks of American artists each year. 
+
+Then we will choose 2015 to see what kind of artworks are in 2015. We will find the artworks in 2015 were all sculptures.
+
+This is not a general conclusion because the samples, namely the datasets, have bias. But it offers a generalizable approach that can be used to study the preferences of artists of different nationalities in creating artworks.
+
+
+
+4. Data Structure
+
+The original data from url is saved in 'a list of lists': data_of_artist_table, data_of_art_table (In the file get_and_read_artist_data.py and get_and_read_art_data.py)
+
+The object created by the user's option is saved in 'a list of objects': list_of_artist_objects, list_of_artwork_objects (In the file read_data_into_objects.py, function read_data_into_objects_by_country())
+
+The data analysis will use 'the list of artwork objects', counting the number of artworks for a certain attribute.
+
+The result of data analysis is saved in a 'dictionary': dict_of_artworks. This dictionary is used for visualizing. Its keys are the keys are the unique values of the category, and values are the number of artworks. (In filter_data.py, function classify_artworks_by_criterion())
+
+In user interaction, I use the 'pandas data frame' to give the user a sequence of choices: df_artist, df_art (in the file data_dashboard.py)
+
+These are some of the most important data structures in the entire program。
+
+
+
+5. Visulization
+
+The Artwork Viewer is a program with three pages: the start page, page one, and page two. The program allows users to select a country and a category of artworks, and then switch back and forth between pages to make further selections and obtain data visualizations.
+
+The start page provides instructions on how to use the program and explains the available options. After selecting a country and a category, users can click the "show chart" button to jump to page one. On this page, a pie or bar chart will be displayed showing the distribution of all artworks created by artists from the selected country, based on the first selected category. The page also includes a "Back to start page" button and a "show chart" button for further analysis.
+
+If users want to obtain more detailed information, they can select a specific value on the chart and a new category, which will impact the data visualization. This will filter a new list of artwork objects from the original list and create a new dictionary for the figure on page two.
+
+On page two, users can view the results of their further data analysis and the corresponding image. They can choose to return to page one to reselect the category they are interested in.
+
+Throughout the process, users can select different options each time to obtain different figures and draw their own conclusions.
+
+
+
+
+
+PS: here is a simple example of the program
+
+1. In the first selection, the user will choose a country and a category.
+if user_choice == "Canada"
+
+we create a list of artist objects, for example:
+list_of_artist_object = [artist123, artist122, artist999, artist888]
+
+(There could be a collaboration of artists)
+artist 123 <-> artwork "Sunset"
+artist 122 <-> artwork "Sunset"
+artist 999 <-> artwork "Angel"
+artist 888 <-> artwork "Sky"
+
+'artist id' links the artist dataset and artwork dataset
+
+Next, we create the list of artwork objects based on list of artist objects
+
+id = 123 -> create a artwork object
+id = 122 -> create a artwork object
+id = 999 -> create a artwork object
+id = 888 -> create a artwork object
+
+list_of_artwork_object = ["Sunset", "Sunset", "Angel", "Sky"]
+
+We can delete the duplicates in the list_of_artwork_object using hash method and equal method.
+Then we will get, list_of_artwork_object = ["Sunset", "Angel", "Sky"]
+
+The user will choose a category of artworks, from type, status, material, year, neighbourhood.
+if user_category == "year":
+
+"Sunset".year = "2020"
+"Angel".type = "2020"
+"Sky".type = "2018"
+
+We will create a dictionary to save the result:
+{"2020": 2, "2018": 1} -> draw a bar chart
+
+2. In the second selection, the user will choose a specific value and a new category.
+If the user selects the year 2020, and the type.
+
+Then we will filter a new list of artwork objects from the original list based on year 2020.
+
+list_of_artwork_object = ["Sunset", "Angel"]
+
+classify it by "type":
+
+"Sunset".type = "Mural"
+"Angel".type = "Sculpture"
+
+Then we will get a new dictionary: {"Mural": 1, "Sculpture": 1} -> draw a new bar chart
+

@@ -13,7 +13,7 @@ from class_of_art import ArtWork
 
 TWO = 2
 
-class ArtWorkTest(unittest.TestCase):
+class TestArtWork(unittest.TestCase):
     '''
     class ArtWorkTest: test class ArtWork's __init__,  __str__, __hash__ and __eq__.                      
     '''

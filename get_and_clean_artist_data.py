@@ -11,7 +11,6 @@ import requests
 import re
 
 STATUS_CODE = 200
-ARTIST_URL = "https://opendata.vancouver.ca/api/explore/v2.1/catalog/datasets/public-art-artists/exports/csv?lang=en&timezone=America%2FLos_Angeles&use_labels=true&delimiter=%3B"
 
 MISSING_VALUE = ""
 REPLACED_VALUE = "Unknown"
@@ -21,12 +20,12 @@ FIRST_NAME_INDEX = 1
 LAST_NAME_INDEX = 2 
 
 
-def get_artist_csv_file():
+def get_artist_csv_file(artist_url):
     '''
     Function: 
         get_art_csv_file -- Read a CSV file containing data from a given URL, cleans the data, and returns the contents as a string.
     Parameters: 
-        Nothing
+        artist_url -- a string, the url of artist data
     Returns: 
         content_of_arts -- a string, containing the contents of the CSV file
     Error handling:
@@ -34,17 +33,15 @@ def get_artist_csv_file():
         ConnectionError occurred if network problem occurred
         TimeoutError occurred if request times out
         requests.RequestException occurred if other errors occurred
+        raise TypeError if artist_url is not a str
     '''
     try:
-        download_artists = ARTIST_URL
         
-        response_artists_website = requests.get(download_artists)
+        if not isinstance(artist_url, str):
+            raise TypeError(f"{artist_url} should be a str")
+        
+        response_artists_website = requests.get(artist_url)
 
-        # 可以删除
-        # if response_artists_website.status_code != STATUS_CODE:
-        #     raise requests.exceptions.HTTPError(f"Error occurred in get_artist_csv_file(): status code {response_artists_website.status_code}")
-        
-        # throw a error
         response_artists_website.raise_for_status()
 
         content_of_artists = response_artists_website.text
@@ -104,11 +101,9 @@ def get_basic_info_from_artist_table(content_of_artists):
         raise TypeError(f"in get_basic_info_from_artist_table(), {content_of_artists} should be a string")
 
     # extract the data of id, first_name, last_name
-    pattern_of_basic_info = r"\r\n(\d{1,});([^;]*);([^;]*);http.*\d{1,3};"
+    pattern_of_basic_info = r"\r\n(\d{1,});([^;]*);([^;]*);http.*\d{1,};"
 
     matches_of_basic_info = re.findall(pattern_of_basic_info, content_of_artists)
-    # print(matches_of_basic_info)
-    # print(len(matches_of_basic_info))
     
     list_of_artist_id = []
     list_of_first_name = []
@@ -141,23 +136,15 @@ def get_country_from_artist_table(content_of_artists):
     '''
 
     if not isinstance(content_of_artists, str):
-        raise TypeError(f"get_country_from_artist_table(): {content_of_artists} should be a string ")
+        raise TypeError(f"get_country_from_artist_table(): {content_of_artists} should be a string")
     
-    pattern_of_country = r";([^;]*);[^;]*;[^;]*;[^;]*(?:\r\n\d{1,3};|\r$)"
+    pattern_of_country = r";([^;]*);[^;]*;[^;]*;[^;]*(?:\r\n\d{1,};|\r$)"
     matches_of_country = re.findall(pattern_of_country, content_of_artists)
 
     list_of_country = matches_of_country[1:]
     list_of_country = replace_artist_empty_with_unknown(list_of_country)
     return list_of_country
     
-    # if the regular expression fails for some reason, I hope the function won't crash, 
-    # so I return a valid result, namely an empty one list.
-    # except re.error as e:
-    #     print("Error in regex:", e)
-    #     return []
-
-
-
 
 
 def get_public_arist_data(artist_id, first_name, last_name, country):
@@ -172,10 +159,10 @@ def get_public_arist_data(artist_id, first_name, last_name, country):
     Returns:
         data_of_artist_table -- a nested list containing the information of each artist, with each sublist containing the artist ID, first name, last name, and country
     Error handling:
-        raise TypeError if artist_id is not a str
-        raise TypeError if first_name is not a str
-        raise TypeError if last_name is not a str
-        raise TypeError if country is not a str
+        raise TypeError if artist_id is not a list
+        raise TypeError if first_name is not a list
+        raise TypeError if last_name is not a list
+        raise TypeError if country is not a list
         raise ValueError if these lists are not of the same length
     '''
 
@@ -188,16 +175,13 @@ def get_public_arist_data(artist_id, first_name, last_name, country):
     if not isinstance(country, list):
         raise TypeError(f"in get_public_arist_data(): the {country} should be a list")
     if not (len(artist_id) == len(first_name) == len(last_name) == len(country)):
-        raise ValueError("in get_public_arist_data(), the length of lists should be identical")
+        raise ValueError("in get_public_arist_data(): the length of lists should be identical")
 
 
     data_of_artist_table = []
 
     for i in range(len(artist_id)):
         data_of_artist_table.append([artist_id[i], first_name[i], last_name[i], country[i]])
-
-    # print(data_of_artist_table)
-    # print(len(data_of_artist_table))
 
     return data_of_artist_table
 

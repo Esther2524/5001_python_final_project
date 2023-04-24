@@ -1,6 +1,18 @@
 '''
-This is a 
+CS5001
+Final Project
+Spring 2023
+MyName: Zhixiao Wang
 
+This is a file of filtering data with two functions:
+    classify_artworks_by_criterion (list -> dict)
+        from a list of artwork objects (same country), obtain a dict of categories and numbers of artworks based on the attribute entered by the user
+        This function will be called in both the first and the second selections, because the generated dict will be used for drawing charts
+
+    filter_artworks_by_attribute_value (list -> list)
+        obtain a list of artwork objects from the original list of artwork objects, according to specific value of the attribute
+        This function will be called only in the second selection.
+        
 '''
 
 
@@ -22,6 +34,7 @@ def classify_artworks_by_criterion(artworks, criterion):
 
     if not isinstance(artworks, list):
         raise TypeError(f"in classify_artworks_by_criterion(): {artworks} should be a list")
+    
     if not isinstance(criterion, str):
         raise TypeError(f"in classify_artworks_by_criterion(): {criterion} should be a string")
 
@@ -39,21 +52,19 @@ def classify_artworks_by_criterion(artworks, criterion):
         unique_artworks.add(artwork)
 
     dic_of_artworks_by_criterion = {}
-        # artwork is an object of class ArtWork, so self.artworks is a list of artwork objects
 
     for artwork in unique_artworks:
-        # print(artwork)
+
         # getattr function to get the value of the attribute specified by the criterion parameter from the artwork object
         # in this case, artwork_criterion is like artwork.type
         # getattr(object, attribute) is equal to object.attribute, like "sculpture" = artwork.type = getattr(artwork, "type")
+        
         artwork_criterion = getattr(artwork, criterion)
 
         if artwork_criterion in dic_of_artworks_by_criterion:
             dic_of_artworks_by_criterion[artwork_criterion] += 1
         else:
             dic_of_artworks_by_criterion[artwork_criterion] = 1
-
-        # the dic artworks_by_type is like 
     
     return dic_of_artworks_by_criterion
 
@@ -71,12 +82,15 @@ def filter_artworks_by_attribute_value(artworks, attribute, value):
         value -- a string, the value to match the specified attribute against.
 
     Return:
-        filtered_artworks -- a list of artwork objects that have the specified attribute set to the specified value.
+        filtered_artworks -- a list of artwork objects, that have the specified attribute set to the specified value.
 
     Error handling:
-        raise 
+        raise TypeError if artworks is not a list
+        raise TypeError if attribute is not a str
+        raise TypeError if value is not a str
         
-    Example:
+    Note:
+    This function is mainly used for the second selection
     Attribute and value are user-selected
     If attribute is year and the value is 2016, then the filtered_artworks is a list of artwork objects that all objects' 'year' attribute is equal to 2016
     '''
@@ -89,6 +103,10 @@ def filter_artworks_by_attribute_value(artworks, attribute, value):
     
     if not isinstance(value, str):
         raise TypeError(f"{value} should be a str")
+    
+    # when the user doesn't select anything in the drop-down box
+    if attribute == "":
+        raise AttributeError("artwork's attribute cannot be empty")
     
     filtered_artworks = []
 

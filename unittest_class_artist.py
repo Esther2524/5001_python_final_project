@@ -4,7 +4,7 @@ Final Project
 Spring 2023
 MyName: Zhixiao Wang
 
-This is a file to create a ArtistTest class test Artist class.
+This is a file to create a ArtistTest class and test Artist class.
 '''
 
 
@@ -14,7 +14,7 @@ from class_of_artist import Artist
 
 TWO = 2
 
-class ArtistTest(unittest.TestCase):
+class TestArtist(unittest.TestCase):
     '''
     class ArtistTest: test class Artist's __init__,  __str__, and __eq__.                      
     '''
@@ -24,14 +24,12 @@ class ArtistTest(unittest.TestCase):
         self.assertEqual(artist1.first_name, "Aaron")
         self.assertEqual(artist1.last_name, "Nelson-Moody")
         self.assertEqual(artist1.country, "Canada")
-        self.assertEqual(artist1.artworks, [])
 
         artist2 = Artist("215", "Lawrence", "Weiner", "USA")
         self.assertEqual(artist2.id, "215")
         self.assertEqual(artist2.first_name, "Lawrence")
         self.assertEqual(artist2.last_name, "Weiner")
         self.assertEqual(artist2.country, "USA")
-        self.assertEqual(artist1.artworks, [])
 
     def test_init_id_with_wrong_int(self):
         with self.assertRaises(TypeError) as te:

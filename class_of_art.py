@@ -46,7 +46,7 @@ class ArtWork:
          __eq__(): a method that compares the id of two Artwork instances and returns True if they are the same, False otherwise.
             Parameter:
                 self -- the current object
-                other -- the other Artwork instance
+                other_artwork -- the other Artwork instance
             Return:
                 returns True if all the information (except for ids of their artists) of them is the same, False otherwise.
             Error handling:
